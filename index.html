@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>名言集 · Quotes Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-color: #0f0f0f;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --accent: #ff6b6b;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --dialogue-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 动态背景 */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(255, 107, 107, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(78, 205, 196, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(69, 183, 209, 0.1) 0%, transparent 50%);
+            animation: bgMove 20s ease-in-out infinite;
+        }
+
+        @keyframes bgMove {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        /* 头部 */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem;
+            z-index: 100;
+            background: linear-gradient(to bottom, var(--bg-color), transparent);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* 主容器 - 纵向排列 */
+        .quotes-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 120px 20px 100px;
+            gap: 80px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 名言卡片 */
+        .quote-card {
+            width: 100%;
+            position: relative;
+            padding: 60px 40px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .quote-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quote-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 引号装饰 */
+        .quote-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 120px;
+            color: var(--accent);
+            opacity: 0.3;
+            font-family: Georgia, serif;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        /* 关键样式：保留换行符 */
+        .quote-text {
+            font-size: 1.5rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+            white-space: pre-line; /* 保留换行符 */
+        }
+
+        /* 对话样式 */
+        .dialogue-line {
+            display: block;
+            margin-bottom: 1em;
+            padding-left: 1em;
+            border-left: 3px solid var(--accent);
+            opacity: 0.9;
+        }
+
+        .dialogue-line:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 引号样式 */
+        .quote-mark {
+            color: var(--accent);
+            opacity: 0.8;
+            font-family: Georgia, serif;
+        }
+
+        .quote-author {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            text-align: right;
+            font-style: italic;
+            margin-top: 20px;
+        }
+
+        .quote-author::before {
+            content: '— ';
+        }
+
+        /* 分类标签 */
+        .quote-tag {
+            position: absolute;
+            top: -12px;
+            right: 30px;
+            background: var(--accent);
+            color: var(--bg-color);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* 滚动指示器 */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.6;
+            animation: bounce 2s infinite;
+            pointer-events: none;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .scroll-indicator svg {
+            width: 30px;
+            height: 30px;
+            stroke: var(--text-primary);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* 隐藏滚动指示器 */
+        .scroll-indicator.hidden {
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .quote-card {
+                padding: 40px 25px;
+            }
+            .quote-text {
+                font-size: 1.2rem;
+            }
+            .quotes-container {
+                gap: 50px;
+            }
+        }
+
+        /* 加载动画 */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-text {
+            font-size: 1.5rem;
+            letter-spacing: 0.5em;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载画面 -->
+    <div class="loader" id="loader">
+        <div class="loader-text">载入中…</div>
+    </div>
+
+    <!-- 动态背景 -->
+    <div class="bg-animation"></div>
+
+    <!-- 头部 -->
+    <header>
+        <h1>项语</h1>
+    </header>
+
+    <!-- 名言容器 -->
+    <main class="quotes-container" id="quotesContainer">
+        <!-- 名言将通过 JavaScript 动态插入 -->
+    </main>
+
+    <!-- 滚动指示器 -->
+    <div class="scroll-indicator" id="scrollIndicator">
+        <span>向下滚动</span>
+        <svg viewBox="0 0 24 24">
+            <path d="M12 5v14M19 12l-7 7-7-7"/>
+        </svg>
+    </div>
+
+    <script>
+        // 名言数据 - 支持换行符 \n 和引号 \"
+        const quotes = [
+            {
+                text: "喜欢白洲梓的人都得了爱梓病",
+                author: "XY",
+                tag: "Sayings"
+            },
+            {
+                text: "\"我要一杯星冰乐\"\n店员：\"你的星冰乐\"",
+                author: "XY",
+                tag: "Sayings"
+            },
+            {
+                text: "如果有一天你的手和脚打起来了，你会为了手赢而去打脚吗？",
+                author: "XY",
+                tag: "Sayings"
+            },
+            {
+                text: "你知道为什么兵马俑很爽吗？ 因为守嬴政的很爽",
+                author: "XY",
+                tag: "Sayings"
+            },
+            {
+                text: "周杰伦见过很多人，周杰是个人物。",
+                author: "XY",
+                tag: "Sayings"
+            },
+            {
+                text: "药膏潮了，不能再擦了~",
+                author: "XY",
+                tag: "Sayings"
+            },
+            {
+                text: "领字怎么写？今页多一点~",
+                author: "XY",
+                tag: "Sayings"
+            },
+            {
+                // 使用 \n 换行，使用 \" 转义引号
+                text: "想和爱丽丝一起姓爱",
+                author: "XY",
+                tag: "Sayings"
+            },
+            {
+                // 对话形式示例
+                text: "异地恋就像数列，一个等差，一个等比",
+                author: "XY",
+                tag: "Sayings"
+            },
+            {
+                text: "一只鸟的窝掉进水中，\n河神问:\"你掉的是这个金丝窝还是这个银丝窝?\"\n鸟说:\"草丝窝\"",
+                author: "XY",
+                tag: "Sayings"
+            },
+            {
+                // 多行对话
+                text: "Life is like a dick. \n Sometimes it's up \n Sometimes it's down. \n But it won't be hard forever.",
+                author: "XY",
+                tag: "Sayings"
+            },
+            {
+                // 带引号的现代对话
+                text: "吧唧发生干涉,吧唧干涉 \n倒过来念呢?",
+                author: "XY",
+                tag: "Sayings"
+            },
+            {
+                text: "为什么男生学习不好? 因为学习需要引导,而男生没有 \n 为什么女生学习不好? 因为学习需要积极,而女生没有",
+                author: "夜樱次元",
+                tag: "Sayings"
+            },
+            {
+                text: "桂宇哲和尹静萱生出来的孩子,男的叫桂尹静,女的叫桂尹道",
+                author: "XY",
+                tag: "Sayings"
+            },
+            {
+                text: "为什么睡觉的时候不能0721? \n 因为会被窝潮湿 \n 所以你们喜欢被窝干还是被窝潮?",
+                author: "XY",
+                tag: "Sayings"
+            }
+        ];
+
+        // 转义 HTML 特殊字符，防止 XSS 并正确显示引号
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 处理文本：保留换行，可选地添加对话样式
+        function formatText(text) {
+            // 转义 HTML
+            let formatted = escapeHtml(text);
+            
+            // 将换行符 \n 转换为 <br> 标签，以便更好控制样式
+            // 或者保持 pre-line 样式，这里我们使用 <br> 以获得更灵活的样式控制
+            formatted = formatted.replace(/\n/g, '<br>');
+            
+            return formatted;
+        }
+
+        // 渲染名言
+        function renderQuotes() {
+            const container = document.getElementById('quotesContainer');
+            
+            quotes.forEach((quote, index) => {
+                const card = document.createElement('div');
+                card.className = 'quote-card';
+                
+                const formattedText = formatText(quote.text);
+                
+                card.innerHTML = `
+                    <span class="quote-tag">${escapeHtml(quote.tag)}</span>
+                    <p class="quote-text">${formattedText}</p>
+                    <p class="quote-author">${escapeHtml(quote.author)}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Intersection Observer 用于滚动动画
+        function initScrollAnimation() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            document.querySelectorAll('.quote-card').forEach(card => {
+                observer.observe(card);
+            });
+        }
+
+        // 滚动隐藏指示器
+        function initScrollIndicator() {
+            const indicator = document.getElementById('scrollIndicator');
+            let scrolled = false;
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 100 && !scrolled) {
+                    indicator.classList.add('hidden');
+                    scrolled = true;
+                }
+            });
+        }
+
+        // 初始化
+        window.addEventListener('load', () => {
+            renderQuotes();
+            
+            // 隐藏加载器
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+                
+                // 初始化动画
+                setTimeout(() => {
+                    initScrollAnimation();
+                    // 触发第一个卡片的动画
+                    document.querySelector('.quote-card')?.classList.add('visible');
+                }, 300);
+            }, 800);
+            
+            initScrollIndicator();
+        });
+    </script>
+</body>
+</html>
