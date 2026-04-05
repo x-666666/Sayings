@@ -1,0 +1,206 @@
+body {
+    /*
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: #333;
+    */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: #333;
+
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 1000px;
+    z-index: -10;
+    zoom: 1;
+    background-color: #f4f4f9;
+    /*
+    background: url('https://static.kivo.wiki/images/gallery/1.%E4%B8%BB%E7%BA%BF%E5%89%A7%E6%83%85CG/%E5%BA%8F%E7%AB%A0/BG_CS_Arona.jpg');
+    background: url('https://static.kivo.wiki/images/gallery/22/X0_6rTZl.jpeg');
+    
+    */
+    background: url('./pic/bpic.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    background-position: center 0;
+}
+
+.main-container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+}
+
+/* Tab Navigation */
+.nav-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.nav-tabs button {
+    background: none;
+    color: #888;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.nav-tabs button.active-tab {
+    color: #2c3e50;
+    font-weight: bold;
+    border-bottom: 3px solid #2c3e50;
+}
+
+/* Ensures long text wraps neatly */
+p {
+    overflow-wrap: break-word;
+    word-wrap: break-word; 
+    line-height: 1.5;
+}
+
+#quote, #test-quote {
+    font-size: 1.4rem;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+#author {
+    font-weight: bold;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* Buttons */
+.action-btn {
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+.action-btn:hover {
+    background-color: #1a252f;
+}
+
+/* Test Mode Styles */
+.test-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.test-header h3 {
+    margin: 0;
+}
+
+.score-badge {
+    background-color: #3498db;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+#options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.option-btn {
+    background-color: #ecf0f1;
+    color: #333;
+    border: 2px solid #bdc3c7;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+.option-btn:hover:not(:disabled) {
+    background-color: #d5dbdb;
+}
+
+.option-btn:disabled {
+    cursor: not-allowed;
+}
+
+/* Feedback Colors */
+.correct {
+    background-color: #d4edda !important;
+    border-color: #28a745 !important;
+    color: #155724 !important;
+}
+
+.incorrect {
+    background-color: #f8d7da !important;
+    border-color: #dc3545 !important;
+    color: #721c24 !important;
+}
+
+#test-feedback {
+    font-weight: bold;
+    min-height: 24px;
+}
+
+/* Utility Class */
+.hidden {
+    display: none !important;
+}
+
+/*开始自己的代码，鼠标指针隐藏*/
+* {
+    cursor: none !important;
+}
+
+/*新鼠标指针以及当点击链接时的鼠标指针*/
+.mouse {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ff9068;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    pointer-events: none;
+    z-index: 999;
+    transition: background 0.3s, width 0.3s, height 0.3s;
+}
+
+.mouse.lighter {
+    background-color: #b6ff94;
+    width: 10px;
+    height: 10px;
+}
