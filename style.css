@@ -29,9 +29,10 @@ body {
     /*
     background: url('https://static.kivo.wiki/images/gallery/1.%E4%B8%BB%E7%BA%BF%E5%89%A7%E6%83%85CG/%E5%BA%8F%E7%AB%A0/BG_CS_Arona.jpg');
     background: url('https://static.kivo.wiki/images/gallery/22/X0_6rTZl.jpeg');
-    
-    */
     background: url('./pic/bpic.png');
+    */
+    
+    background: url('https://static.kivo.wiki/images/gallery/2.%E6%97%A5%E6%9C%8DPV%E6%88%AA%E5%9B%BE/PV5/PV5-4K-401.png');
     background-repeat: no-repeat;
     background-size: cover;
     -webkit-background-size: cover;
